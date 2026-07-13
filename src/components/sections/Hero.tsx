@@ -7,18 +7,19 @@ import { ImagePlaceholder } from "@/components/ImagePlaceholder";
 export function Hero() {
   return (
     <section className="relative overflow-hidden">
-      {/* Hintergrund: grosses Vanille-Bild (Platzhalter, bis Foto vorliegt). */}
+      {/* Hintergrund: grosses Foto aus der Anbauregion in Madagaskar. */}
       <div className="absolute inset-0 -z-10">
         <ImagePlaceholder
-          src={undefined /* z. B. "/images/hero-vanille.jpg" */}
-          alt="Hochwertige Bourbon-Vanilleschoten aus Madagaskar"
+          src="/images/herkunft/anbau.jpg"
+          alt="Vanillepflanzen in einer Plantage in Madagaskar"
           rounded="rounded-none"
           className="h-full w-full"
           priority
           sizes="100vw"
-          label="Hero-Bild-Platzhalter"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-cream/85 via-cream/70 to-cream" />
+        {/* Cremiges Scrim: links deckend fuer Textkontrast, rechts Foto sichtbar */}
+        <div className="absolute inset-0 bg-gradient-to-r from-cream via-cream/90 to-cream/40" />
+        <div className="absolute inset-0 bg-gradient-to-t from-cream via-cream/20 to-transparent" />
       </div>
 
       <div className="container-page relative flex min-h-[calc(100vh-5rem)] flex-col justify-center py-20 lg:py-28">

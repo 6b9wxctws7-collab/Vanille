@@ -4,8 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { mainNav } from "@/config/navigation";
-import { site } from "@/config/site";
 import { Icon } from "@/components/Icon";
+import { Logo } from "@/components/Logo";
 import { ButtonLink } from "@/components/ui/Button";
 
 export function Navbar() {
@@ -50,15 +50,10 @@ export function Navbar() {
       >
         <Link
           href="/"
-          className="flex items-center gap-2 font-serif text-xl font-semibold text-cocoa"
+          aria-label="Vanora – zur Startseite"
+          className="flex items-center rounded-lg py-1"
         >
-          <span
-            aria-hidden
-            className="grid h-9 w-9 place-items-center rounded-full bg-gold/15 text-gold-dark"
-          >
-            <Icon name="leaf" size={20} />
-          </span>
-          <span>{site.brandName}</span>
+          <Logo variant="mark" height={44} priority className="h-10 w-auto lg:h-11" />
         </Link>
 
         {/* Desktop-Navigation */}

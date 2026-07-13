@@ -2,6 +2,7 @@ import Link from "next/link";
 import { site } from "@/config/site";
 import { legalNav } from "@/config/navigation";
 import { Icon } from "@/components/Icon";
+import { Logo } from "@/components/Logo";
 import { NewsletterSignup } from "@/components/NewsletterSignup";
 
 const columnProducts = [
@@ -30,15 +31,10 @@ export function Footer() {
           <div className="lg:col-span-4">
             <Link
               href="/"
-              className="flex items-center gap-2 font-serif text-xl font-semibold text-cocoa"
+              aria-label="Vanora – zur Startseite"
+              className="inline-flex rounded-lg"
             >
-              <span
-                aria-hidden
-                className="grid h-9 w-9 place-items-center rounded-full bg-gold/15 text-gold-dark"
-              >
-                <Icon name="leaf" size={20} />
-              </span>
-              {site.brandName}
+              <Logo variant="full" height={92} className="h-20 w-auto sm:h-24" />
             </Link>
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-cocoa-muted">
               {site.tagline}

@@ -17,7 +17,7 @@ export function ProductsSection() {
         <div className="mt-12 grid gap-6 md:grid-cols-2">
           {products.map((product, i) => (
             <Reveal key={product.slug} delay={i * 100} className="h-full">
-              <ProductCard product={product} />
+              <ProductCard product={product} withImage />
             </Reveal>
           ))}
         </div>

@@ -81,11 +81,10 @@ export default function ProduktePage() {
               className="scroll-mt-24 grid items-start gap-10 lg:grid-cols-2 lg:gap-14"
             >
               <ImagePlaceholder
-                src={undefined /* z. B. product.image */}
+                src={product.image}
                 alt={product.imageAlt}
                 className={`aspect-[4/3] w-full ${index % 2 === 1 ? "lg:order-last" : ""}`}
                 sizes="(max-width: 1024px) 100vw, 50vw"
-                label="Produktbild-Platzhalter"
               />
               <div>
                 <h2 className="text-3xl font-semibold">{product.name}</h2>
@@ -163,6 +162,48 @@ export default function ProduktePage() {
           ))}
         </div>
       </div>
+
+      {/* Einblicke: Verarbeitung & Verpackung */}
+      <section className="section pt-0">
+        <div className="container-page">
+          <SectionHeading
+            eyebrow="Einblicke"
+            title="Von der Schote bis zur Verpackung"
+            description="Ausgewählte, gebündelte und sortierte Schoten – sorgfältig getrocknet und für den Versand vorbereitet."
+          />
+          <div className="mt-10 grid gap-4 sm:grid-cols-3">
+            {[
+              {
+                src: "/images/produkte/vanille-buendel.jpg",
+                alt: "Gebündelte Vanilleschoten werden von Hand sortiert",
+                caption: "Sortierte Bündel",
+              },
+              {
+                src: "/images/produkte/vanille-trocknung.jpg",
+                alt: "Vanilleschoten liegen zum Trocknen ausgebreitet",
+                caption: "Trocknung",
+              },
+              {
+                src: "/images/produkte/vanille-verpackung.jpg",
+                alt: "Vakuumierte Beutel mit Vanilleschoten für den Versand",
+                caption: "Versandfertige Gebinde",
+              },
+            ].map((img) => (
+              <figure key={img.src} className="group">
+                <ImagePlaceholder
+                  src={img.src}
+                  alt={img.alt}
+                  className="aspect-[4/3] w-full"
+                  sizes="(max-width: 640px) 100vw, 33vw"
+                />
+                <figcaption className="mt-2 text-sm text-cocoa-muted">
+                  {img.caption}
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* Lagerung & Herkunft */}
       <section className="section bg-cream-200/50">

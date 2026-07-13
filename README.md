@@ -1,4 +1,4 @@
-# [Markenname] – B2B-Website für Bourbon-Vanille aus Madagaskar
+# Vanora – B2B-Website für Bourbon-Vanille aus Madagaskar
 
 Moderne, responsive B2B-Website für ein Schweizer Unternehmen, das Premium-
 Bourbon-Vanilleschoten aus Madagaskar an Gastronomie, Patisserien, Chocolatiers,
@@ -44,8 +44,9 @@ Alle Marken- und Kontaktdaten werden an **einer** Stelle gepflegt:
 | Produkte, Branchen, Vorteile, FAQ …   | `src/config/content.ts`      |
 | Bilder                                | `public/images/` (siehe README dort) |
 
-> Ersetzen Sie überall die mit `[ ]` markierten **Platzhalter** durch echte
-> Angaben (z. B. `[Markenname]`, `[+41 …]`, Adresse, Rechtstexte).
+> Der Markenname **Vanora** und das Logo sind bereits gesetzt. Ersetzen Sie noch
+> die verbleibenden mit `[ ]` markierten **Platzhalter** durch echte Angaben
+> (z. B. `[+41 …]`, Adresse, Register-/MwSt-Nummer, Rechtstexte).
 
 ### WhatsApp-Button
 

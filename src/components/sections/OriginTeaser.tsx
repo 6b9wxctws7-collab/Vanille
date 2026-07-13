@@ -8,11 +8,10 @@ export function OriginTeaser() {
     <section className="section bg-cream-200/50">
       <div className="container-page grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
         <ImagePlaceholder
-          src={undefined /* z. B. "/images/herkunft/anbauregion.jpg" */}
-          alt="Vanille-Anbauregion in Madagaskar"
+          src="/images/herkunft/produzent.jpg"
+          alt="Junger Produzent trägt Vanillepflanzen in Madagaskar"
           className="aspect-[4/3] w-full"
           sizes="(max-width: 1024px) 100vw, 50vw"
-          label="Foto Anbauregion (Platzhalter)"
         />
         <div>
           <SectionHeading

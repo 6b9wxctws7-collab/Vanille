@@ -8,9 +8,18 @@
  */
 
 export const site = {
-  /** Markenname – zunaechst Platzhalter. Ueberall zentral verwendet. */
-  brandName: "[Markenname]",
+  /** Markenname. Ueberall zentral verwendet. */
+  brandName: "Vanora",
   tagline: "Premium Bourbon-Vanille aus Madagaskar für professionelle Anwender",
+
+  /** Logo-Dateien (transparent, fuer beliebige Hintergruende).
+   *  - mark: Emblem + Schriftzug (kompakt, fuer Kopf-/Fusszeile)
+   *  - full: komplettes Lockup inkl. Claim (fuer Markenflaechen/OG) */
+  logo: {
+    mark: { src: "/images/logo/vanora-logo-mark.png", width: 991, height: 705 },
+    full: { src: "/images/logo/vanora-logo.png", width: 991, height: 812 },
+    alt: "Vanora – Madagascar Bourbon Vanilla",
+  },
 
   /** Basis-URL der Seite (fuer SEO, Sitemap, Open Graph). */
   url:
@@ -23,7 +32,7 @@ export const site = {
 
   /** Kontaktdaten – Platzhalter bis echte Daten vorliegen. */
   contact: {
-    company: "[Markenname] GmbH",
+    company: "Vanora",
     addressLine1: "[Strasse und Hausnummer]",
     addressLine2: "[PLZ Ort]",
     country: "Schweiz",

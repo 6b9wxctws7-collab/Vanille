@@ -89,8 +89,8 @@ export default function UeberUnsPage() {
             </div>
           </div>
           <ImagePlaceholder
-            alt="Bourbon-Vanilleschoten und Verarbeitung"
-            label="Foto (Platzhalter)"
+            src="/images/herkunft/qualitaetskontrolle.jpg"
+            alt="Produzenten bündeln und sortieren Bourbon-Vanilleschoten in Madagaskar"
             className="aspect-[4/3] w-full"
             sizes="(max-width: 1024px) 100vw, 50vw"
           />
