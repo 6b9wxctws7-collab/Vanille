@@ -1,7 +1,14 @@
 import type { MetadataRoute } from "next";
 import { site } from "@/config/site";
+import { locales } from "@/i18n/config";
 
-const routes: { path: string; priority: number; changeFrequency: MetadataRoute.Sitemap[number]["changeFrequency"] }[] = [
+type Entry = {
+  path: string;
+  priority: number;
+  changeFrequency: MetadataRoute.Sitemap[number]["changeFrequency"];
+};
+
+const routes: Entry[] = [
   { path: "/", priority: 1.0, changeFrequency: "weekly" },
   { path: "/produkte", priority: 0.9, changeFrequency: "weekly" },
   { path: "/qualitaet", priority: 0.7, changeFrequency: "monthly" },
@@ -14,10 +21,24 @@ const routes: { path: string; priority: number; changeFrequency: MetadataRoute.S
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
-  return routes.map((r) => ({
-    url: `${site.url}${r.path}`,
-    lastModified: now,
-    changeFrequency: r.changeFrequency,
-    priority: r.priority,
-  }));
+  const entries: MetadataRoute.Sitemap = [];
+
+  for (const r of routes) {
+    for (const locale of locales) {
+      const clean = r.path === "/" ? "" : r.path;
+      entries.push({
+        url: `${site.url}/${locale}${clean}`,
+        lastModified: now,
+        changeFrequency: r.changeFrequency,
+        priority: r.priority,
+        alternates: {
+          languages: Object.fromEntries(
+            locales.map((l) => [l, `${site.url}/${l}${clean}`]),
+          ),
+        },
+      });
+    }
+  }
+
+  return entries;
 }

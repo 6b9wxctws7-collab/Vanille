@@ -1,10 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import type { FaqItem } from "@/config/content";
 import { Icon } from "@/components/Icon";
 
-export function FaqAccordion({ items }: { items: FaqItem[] }) {
+type FaqItem = { question: string; answer: string };
+
+export function FaqAccordion({ items }: { items: readonly FaqItem[] }) {
   const [open, setOpen] = useState<number | null>(0);
 
   return (

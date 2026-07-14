@@ -1,14 +1,16 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { mainNav } from "@/config/navigation";
+import type { Dictionary } from "@/i18n";
+import { localeFromPathname } from "@/i18n/routing";
 import { Icon } from "@/components/Icon";
 import { Logo } from "@/components/Logo";
 import { ButtonLink } from "@/components/ui/Button";
+import { LocaleLink } from "@/components/i18n/LocaleLink";
+import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
 
-export function Navbar() {
+export function Navbar({ nav }: { nav: Dictionary["nav"] }) {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
@@ -20,12 +22,10 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Menue bei Navigation schliessen
   useEffect(() => {
     setOpen(false);
   }, [pathname]);
 
-  // Scroll sperren, wenn mobiles Menue offen
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
     return () => {
@@ -33,8 +33,11 @@ export function Navbar() {
     };
   }, [open]);
 
+  // Pfad ohne Sprachpräfix für den Aktiv-Vergleich.
+  const locale = localeFromPathname(pathname);
+  const rel = pathname.replace(new RegExp(`^/${locale}`), "") || "/";
   const isActive = (href: string) =>
-    href === "/" ? pathname === "/" : pathname.startsWith(href);
+    href === "/" ? rel === "/" : rel.startsWith(href);
 
   return (
     <header
@@ -46,21 +49,17 @@ export function Navbar() {
     >
       <nav
         className="container-page flex h-16 items-center justify-between lg:h-20"
-        aria-label="Hauptnavigation"
+        aria-label={nav.home}
       >
-        <Link
-          href="/"
-          aria-label="Vanora – zur Startseite"
-          className="flex items-center rounded-lg py-1"
-        >
+        <LocaleLink href="/" aria-label={nav.home} className="flex items-center rounded-lg py-1">
           <Logo variant="mark" height={44} priority className="h-10 w-auto lg:h-11" />
-        </Link>
+        </LocaleLink>
 
         {/* Desktop-Navigation */}
         <ul className="hidden items-center gap-1 lg:flex">
-          {mainNav.map((item) => (
+          {nav.items.map((item) => (
             <li key={item.href}>
-              <Link
+              <LocaleLink
                 href={item.href}
                 aria-current={isActive(item.href) ? "page" : undefined}
                 className={`rounded-full px-3 py-2 text-sm font-medium transition-colors ${
@@ -70,28 +69,32 @@ export function Navbar() {
                 }`}
               >
                 {item.label}
-              </Link>
+              </LocaleLink>
             </li>
           ))}
         </ul>
 
-        <div className="hidden lg:block">
+        <div className="hidden items-center gap-3 lg:flex">
+          <LanguageSwitcher label={nav.languageLabel} />
           <ButtonLink href="/muster-anfragen" size="sm">
-            Kostenloses Muster anfragen
+            {nav.cta}
           </ButtonLink>
         </div>
 
         {/* Mobile: Umschalter */}
-        <button
-          type="button"
-          onClick={() => setOpen((v) => !v)}
-          className="grid h-11 w-11 place-items-center rounded-full text-cocoa hover:bg-sand/60 lg:hidden"
-          aria-expanded={open}
-          aria-controls="mobile-menu"
-          aria-label={open ? "Menü schließen" : "Menü öffnen"}
-        >
-          <Icon name={open ? "close" : "menu"} size={24} />
-        </button>
+        <div className="flex items-center gap-2 lg:hidden">
+          <LanguageSwitcher label={nav.languageLabel} />
+          <button
+            type="button"
+            onClick={() => setOpen((v) => !v)}
+            className="grid h-11 w-11 place-items-center rounded-full text-cocoa hover:bg-sand/60"
+            aria-expanded={open}
+            aria-controls="mobile-menu"
+            aria-label={open ? nav.closeMenu : nav.openMenu}
+          >
+            <Icon name={open ? "close" : "menu"} size={24} />
+          </button>
+        </div>
       </nav>
 
       {/* Mobile-Menue */}
@@ -100,9 +103,9 @@ export function Navbar() {
         className={`lg:hidden ${open ? "block" : "hidden"} border-t border-cocoa/10 bg-cream`}
       >
         <ul className="container-page flex flex-col gap-1 py-4">
-          {mainNav.map((item) => (
+          {nav.items.map((item) => (
             <li key={item.href}>
-              <Link
+              <LocaleLink
                 href={item.href}
                 aria-current={isActive(item.href) ? "page" : undefined}
                 className={`block rounded-xl px-4 py-3 text-base font-medium ${
@@ -112,16 +115,12 @@ export function Navbar() {
                 }`}
               >
                 {item.label}
-              </Link>
+              </LocaleLink>
             </li>
           ))}
           <li className="mt-2">
-            <ButtonLink
-              href="/muster-anfragen"
-              className="w-full"
-              size="lg"
-            >
-              Kostenloses Muster anfragen
+            <ButtonLink href="/muster-anfragen" className="w-full" size="lg">
+              {nav.cta}
             </ButtonLink>
           </li>
         </ul>

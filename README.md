@@ -40,8 +40,8 @@ Alle Marken- und Kontaktdaten werden an **einer** Stelle gepflegt:
 | Was                                   | Datei                        |
 | ------------------------------------- | ---------------------------- |
 | Markenname, Kontakt, Adresse, WhatsApp, Rechtliches | `src/config/site.ts`         |
-| Navigation & Footer-Links             | `src/config/navigation.ts`   |
-| Produkte, Branchen, Vorteile, FAQ …   | `src/config/content.ts`      |
+| Alle Texte, Navigation, Produkte, FAQ … (Deutsch) | `src/i18n/dictionaries/de.ts` |
+| Alle Texte … (Französisch)            | `src/i18n/dictionaries/fr.ts` |
 | Bilder                                | `public/images/` (siehe README dort) |
 
 > Der Markenname **Vanora** und das Logo sind bereits gesetzt. Ersetzen Sie noch
@@ -59,31 +59,69 @@ Format **ohne** `+` und Leerzeichen eintragen (z. B. `41790000000`).
 
 ```
 src/
-├── app/                      # Seiten (App Router) & API-Routen
-│   ├── layout.tsx            # Grundgerüst, SEO, Navbar/Footer, Widgets
-│   ├── page.tsx              # Startseite
-│   ├── produkte/             # Produktseite
-│   ├── qualitaet/            # Qualität
-│   ├── herkunft/             # Herkunft / Lieferkette
-│   ├── fuer-geschaeftskunden/# B2B-Seite mit Anfrageformular
-│   ├── ueber-uns/            # Über uns
-│   ├── kontakt/              # Kontakt + FAQ
-│   ├── muster-anfragen/      # Musteranfrage
-│   ├── impressum|datenschutz|agb|lieferbedingungen/
-│   ├── sitemap.ts            # Sitemap
+├── middleware.ts             # Spracherkennung & Locale-Weiterleitung
+├── app/
+│   ├── [locale]/             # Alle Seiten pro Sprache (/de/…, /fr/…)
+│   │   ├── layout.tsx        # Grundgerüst, SEO, Navbar/Footer, Widgets
+│   │   ├── page.tsx          # Startseite
+│   │   ├── produkte/         # Produktseite
+│   │   ├── qualitaet/        # Qualität
+│   │   ├── herkunft/         # Herkunft / Lieferkette
+│   │   ├── fuer-geschaeftskunden/  # B2B-Seite mit Anfrageformular
+│   │   ├── ueber-uns/        # Über uns
+│   │   ├── kontakt/          # Kontakt + FAQ
+│   │   ├── muster-anfragen/  # Musteranfrage
+│   │   ├── impressum|datenschutz|agb|lieferbedingungen/
+│   │   └── not-found.tsx     # 404-Seite
+│   ├── sitemap.ts            # Sitemap (beide Sprachen)
 │   ├── robots.ts             # robots.txt
-│   ├── not-found.tsx         # 404-Seite
 │   └── api/                  # Formular-Endpunkte (sample, business, contact, newsletter)
 ├── components/               # Wiederverwendbare Komponenten
 │   ├── layout/               # Navbar, Footer
 │   ├── sections/             # Seitenabschnitte (Hero, Benefits …)
 │   ├── forms/                # Formulare & Felder
+│   ├── i18n/                 # LocaleLink, LanguageSwitcher
 │   └── ui/                   # Button, Reveal, SectionHeading …
-├── config/                   # site, navigation, content (Inhalte)
+├── config/                   # site (Marke, Kontakt, Rechtliches)
+├── i18n/                     # Sprachen, Wörterbücher (de/fr), Routing
 └── lib/                      # Validierung, Formular-Hook, SEO, Submissions
 ```
 
 ---
+
+## Sprachen (Deutsch / Französisch)
+
+Die Website ist zweisprachig (**Deutsch** und **Französisch**) mit
+sprachpräfixierten URLs:
+
+- `/de/…` – Deutsch
+- `/fr/…` – Französisch
+
+Eine **Middleware** (`src/middleware.ts`) erkennt beim Aufruf von `/` die
+Browsersprache (`Accept-Language`) und leitet auf `/de` oder `/fr` um
+(Fallback: Deutsch). Im Kopf- und Fussbereich gibt es einen **Sprachumschalter
+(DE / FR)**, der den aktuellen Pfad beibehält.
+
+Alle Texte liegen zentral in **Wörterbüchern**:
+
+| Datei | Zweck |
+| ----- | ----- |
+| `src/i18n/config.ts` | verfügbare Sprachen, Standardsprache |
+| `src/i18n/dictionaries/de.ts` | deutsche Texte (Referenz + Typ `Dictionary`) |
+| `src/i18n/dictionaries/fr.ts` | französische Texte (gleiche Struktur) |
+| `src/i18n/index.ts` | `getDictionary(locale)` |
+| `src/i18n/routing.ts` | Hilfsfunktionen für lokalisierte Pfade |
+
+**Neue Sprache hinzufügen:** Locale in `config.ts` ergänzen, ein weiteres
+Wörterbuch nach dem Muster von `fr.ts` anlegen und in `index.ts` registrieren.
+
+**Texte ändern:** Immer in **beiden** Wörterbüchern anpassen – die
+TypeScript-Typprüfung stellt sicher, dass keine Schlüssel fehlen.
+
+Interne Links verwenden `LocaleLink` bzw. `ButtonLink`; sie ergänzen das
+Sprachpräfix automatisch. Metadaten, Sitemap und `hreflang`-Alternativen werden
+je Sprache erzeugt. Formulare senden die aktive Sprache mit, sodass auch die
+serverseitigen Validierungs- und Fehlermeldungen lokalisiert sind.
 
 ## Formulare & Anbindung von Diensten
 

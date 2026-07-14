@@ -3,7 +3,13 @@
  * Der Marker deutet exemplarisch eine Anbauregion an – die konkrete
  * Region ist als Platzhalter hinterlegt.
  */
-export function MadagascarMap({ className = "" }: { className?: string }) {
+export function MadagascarMap({
+  className = "",
+  regionLabel = "Anbauregion: [Platzhalter]",
+}: {
+  className?: string;
+  regionLabel?: string;
+}) {
   return (
     <div className={`relative ${className}`}>
       <svg
@@ -32,7 +38,7 @@ export function MadagascarMap({ className = "" }: { className?: string }) {
         </g>
       </svg>
       <span className="absolute right-2 top-2 rounded-full bg-white/80 px-3 py-1 text-xs font-medium text-cocoa">
-        Anbauregion: [Platzhalter]
+        {regionLabel}
       </span>
     </div>
   );

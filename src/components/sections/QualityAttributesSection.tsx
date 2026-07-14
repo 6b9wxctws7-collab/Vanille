@@ -1,19 +1,15 @@
-import { qualityAttributes } from "@/config/content";
+import type { Dictionary } from "@/i18n";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/ui/Reveal";
 import { Icon } from "@/components/Icon";
 
-export function QualityAttributesSection() {
+export function QualityAttributesSection({ t }: { t: Dictionary["qualitySection"] }) {
   return (
     <section className="section">
       <div className="container-page">
-        <SectionHeading
-          eyebrow="Qualitätsmerkmale"
-          title="Woran wir jede Charge messen"
-          description="Produktspezifikationen und Analyseunterlagen stellen wir Geschäftskunden je nach Charge auf Anfrage zur Verfügung."
-        />
+        <SectionHeading eyebrow={t.eyebrow} title={t.title} description={t.description} />
         <ul className="mt-12 grid gap-x-6 gap-y-4 sm:grid-cols-2 lg:grid-cols-2">
-          {qualityAttributes.map((attr, i) => (
+          {t.items.map((attr, i) => (
             <Reveal
               as="li"
               key={attr.label}
@@ -25,9 +21,7 @@ export function QualityAttributesSection() {
               </span>
               <span>
                 <span className="font-medium text-cocoa">{attr.label}</span>
-                <span className="mt-0.5 block text-sm text-cocoa-muted">
-                  {attr.description}
-                </span>
+                <span className="mt-0.5 block text-sm text-cocoa-muted">{attr.description}</span>
               </span>
             </Reveal>
           ))}

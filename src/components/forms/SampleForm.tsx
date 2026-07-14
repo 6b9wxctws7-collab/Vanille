@@ -1,45 +1,29 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import type { Dictionary } from "@/i18n";
+import type { Locale } from "@/i18n/config";
 import { useFormSubmit } from "@/lib/useFormSubmit";
 import { validateSample } from "@/lib/validation";
-import {
-  Honeypot,
-  SelectField,
-  TextArea,
-  TextInput,
-} from "@/components/forms/fields";
+import { Honeypot, SelectField, TextArea, TextInput } from "@/components/forms/fields";
 import { PrivacyCheckbox } from "@/components/forms/PrivacyCheckbox";
 import { FormSuccess } from "@/components/forms/FormSuccess";
 import { Button } from "@/components/ui/Button";
-import { industryOptions, productOptions } from "@/config/content";
 
-/** Kompaktes Musteranfrage-Formular. */
-export function SampleForm() {
-  const { status, errors, message, submit } = useFormSubmit("/api/sample");
+export function SampleForm({ t, locale }: { t: Dictionary["forms"]; locale: Locale }) {
+  const { status, errors, message, submit } = useFormSubmit("/api/sample", t.connectionError);
   const [clientErrors, setClientErrors] = useState<Record<string, string>>({});
   const fieldErrors = { ...clientErrors, ...errors };
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = new FormData(e.currentTarget);
-    const data = {
-      company: form.get("company"),
-      name: form.get("name"),
-      email: form.get("email"),
-      phone: form.get("phone"),
-      industry: form.get("industry"),
-      product: form.get("product"),
-      message: form.get("message"),
-      privacy: form.get("privacy"),
-      company_website: form.get("company_website"),
-    };
+    const data = { ...Object.fromEntries(form.entries()), locale };
 
-    const local = validateSample(data);
+    const local = validateSample(data, t.validation);
     setClientErrors(local);
     if (Object.keys(local).length > 0) {
-      const first = document.getElementById(Object.keys(local)[0]);
-      first?.focus();
+      document.getElementById(Object.keys(local)[0])?.focus();
       return;
     }
     await submit(data);
@@ -47,12 +31,8 @@ export function SampleForm() {
 
   if (status === "success") {
     return (
-      <FormSuccess title="Vielen Dank für Ihre Musteranfrage">
-        <p>
-          Wir haben Ihre Anfrage erhalten und melden uns in der Regel innerhalb
-          eines Werktags bei Ihnen. Für qualifizierte Geschäftskunden prüfen wir
-          gerne die Zusendung eines Produktmusters.
-        </p>
+      <FormSuccess title={t.success.sampleTitle}>
+        <p>{t.success.sampleText}</p>
       </FormSuccess>
     );
   }
@@ -61,79 +41,24 @@ export function SampleForm() {
     <form onSubmit={onSubmit} noValidate className="space-y-5">
       <Honeypot />
       <div className="grid gap-5 sm:grid-cols-2">
-        <TextInput
-          id="company"
-          name="company"
-          label="Firmenname"
-          required
-          autoComplete="organization"
-          error={fieldErrors.company}
-        />
-        <TextInput
-          id="name"
-          name="name"
-          label="Ansprechpartner"
-          required
-          autoComplete="name"
-          error={fieldErrors.name}
-        />
-        <TextInput
-          id="email"
-          name="email"
-          type="email"
-          inputMode="email"
-          label="E-Mail"
-          required
-          autoComplete="email"
-          error={fieldErrors.email}
-        />
-        <TextInput
-          id="phone"
-          name="phone"
-          type="tel"
-          inputMode="tel"
-          label="Telefon (optional)"
-          autoComplete="tel"
-          error={fieldErrors.phone}
-        />
-        <SelectField
-          id="industry"
-          name="industry"
-          label="Branche"
-          required
-          options={industryOptions}
-          error={fieldErrors.industry}
-        />
-        <SelectField
-          id="product"
-          name="product"
-          label="Gewünschtes Produkt (optional)"
-          options={productOptions}
-          error={fieldErrors.product}
-        />
+        <TextInput id="company" name="company" label={t.labels.company} required autoComplete="organization" error={fieldErrors.company} />
+        <TextInput id="name" name="name" label={t.labels.contactPerson} required autoComplete="name" error={fieldErrors.name} />
+        <TextInput id="email" name="email" type="email" inputMode="email" label={t.labels.email} required autoComplete="email" error={fieldErrors.email} />
+        <TextInput id="phone" name="phone" type="tel" inputMode="tel" label={t.labels.phone} autoComplete="tel" error={fieldErrors.phone} />
+        <SelectField id="industry" name="industry" label={t.labels.industry} required options={t.options.industry} placeholder={t.selectPlaceholder} error={fieldErrors.industry} />
+        <SelectField id="product" name="product" label={t.labels.productOptional} options={t.options.product} placeholder={t.selectPlaceholder} error={fieldErrors.product} />
       </div>
-      <TextArea
-        id="message"
-        name="message"
-        label="Ihr Bedarf (optional)"
-        placeholder="Kurz zu Menge, Verwendungszweck und gewünschter Qualität."
-        error={fieldErrors.message}
-      />
-      <PrivacyCheckbox error={fieldErrors.privacy} />
+      <TextArea id="message" name="message" label={t.labels.need} placeholder={t.placeholders.need} error={fieldErrors.message} />
+      <PrivacyCheckbox t={t.privacy} error={fieldErrors.privacy} />
 
       {status === "error" && message && (
-        <p role="alert" className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">
-          {message}
-        </p>
+        <p role="alert" className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">{message}</p>
       )}
 
       <Button type="submit" size="lg" disabled={status === "submitting"}>
-        {status === "submitting" ? "Wird gesendet …" : "Muster anfragen"}
+        {status === "submitting" ? t.submit.sending : t.submit.sample}
       </Button>
-      <p className="text-xs text-cocoa-muted">
-        Ihre Angaben werden ausschließlich zur Bearbeitung Ihrer Anfrage
-        verwendet. Pflichtfelder sind mit&nbsp;* markiert.
-      </p>
+      <p className="text-xs text-cocoa-muted">{t.requiredHint}</p>
     </form>
   );
 }

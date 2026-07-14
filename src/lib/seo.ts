@@ -1,31 +1,47 @@
 import type { Metadata } from "next";
 import { site } from "@/config/site";
+import { locales, defaultLocale, type Locale } from "@/i18n/config";
 
 type PageMetaInput = {
+  locale: Locale;
   title: string;
   description: string;
+  /** Pfad OHNE Sprachpräfix, z. B. "/produkte". */
   path?: string;
   keywords?: string[];
+  index?: boolean;
 };
 
-/** Erzeugt konsistente Metadaten inkl. Open Graph & Twitter pro Seite. */
+const ogLocale: Record<Locale, string> = { de: "de_CH", fr: "fr_CH" };
+
+/** Erzeugt konsistente, sprachbewusste Metadaten inkl. hreflang-Alternativen. */
 export function pageMetadata({
+  locale,
   title,
   description,
   path = "/",
   keywords,
+  index = true,
 }: PageMetaInput): Metadata {
-  const url = `${site.url}${path}`;
+  const clean = path === "/" ? "" : path;
+  const url = `${site.url}/${locale}${clean}`;
   const fullTitle = `${title} | ${site.brandName}`;
+
+  const languages: Record<string, string> = {};
+  for (const loc of locales) {
+    languages[loc] = `${site.url}/${loc}${clean}`;
+  }
+  languages["x-default"] = `${site.url}/${defaultLocale}${clean}`;
 
   return {
     title,
     description,
     keywords,
-    alternates: { canonical: url },
+    alternates: { canonical: url, languages },
+    robots: index ? undefined : { index: false, follow: true },
     openGraph: {
       type: "website",
-      locale: "de_CH",
+      locale: ogLocale[locale],
       url,
       siteName: site.brandName,
       title: fullTitle,
@@ -48,7 +64,7 @@ export function pageMetadata({
   };
 }
 
-/** Weit gefasste, aber ehrliche Keyword-Basis fuer die Startseite. */
+/** Weit gefasste, aber ehrliche Keyword-Basis. */
 export const baseKeywords = [
   "Bourbon Vanille Schweiz",
   "Vanilleschoten Großhandel Schweiz",

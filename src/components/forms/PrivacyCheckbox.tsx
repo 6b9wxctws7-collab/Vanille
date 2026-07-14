@@ -1,12 +1,14 @@
-import Link from "next/link";
+import type { Dictionary } from "@/i18n";
 import { FieldError } from "./fields";
+import { LocaleLink } from "@/components/i18n/LocaleLink";
 
 type Props = {
+  t: Dictionary["forms"]["privacy"];
   id?: string;
   error?: string;
 };
 
-export function PrivacyCheckbox({ id = "privacy", error }: Props) {
+export function PrivacyCheckbox({ t, id = "privacy", error }: Props) {
   const errorId = `${id}-error`;
   return (
     <div>
@@ -21,12 +23,11 @@ export function PrivacyCheckbox({ id = "privacy", error }: Props) {
           className="mt-0.5 h-5 w-5 shrink-0 rounded border-cocoa/30 text-gold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-dark"
         />
         <span>
-          Ich habe die{" "}
-          <Link href="/datenschutz" className="font-medium text-gold-dark underline">
-            Datenschutzerklärung
-          </Link>{" "}
-          gelesen und stimme der Verarbeitung meiner Angaben zur Bearbeitung
-          meiner Anfrage zu. <span className="text-gold-dark">*</span>
+          {t.before}{" "}
+          <LocaleLink href="/datenschutz" className="font-medium text-gold-dark underline">
+            {t.link}
+          </LocaleLink>{" "}
+          {t.after} <span className="text-gold-dark">*</span>
         </span>
       </label>
       <FieldError id={errorId} message={error} />

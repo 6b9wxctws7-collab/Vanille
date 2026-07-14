@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
-import Link from "next/link";
 import { Icon } from "@/components/Icon";
+import { LocaleLink } from "@/components/i18n/LocaleLink";
 
 type Crumb = { label: string; href: string };
 
@@ -9,6 +9,7 @@ type PageHeroProps = {
   title: string;
   description?: ReactNode;
   crumbs?: Crumb[];
+  breadcrumbLabel?: string;
   children?: ReactNode;
 };
 
@@ -17,6 +18,7 @@ export function PageHero({
   title,
   description,
   crumbs,
+  breadcrumbLabel = "Breadcrumb",
   children,
 }: PageHeroProps) {
   return (
@@ -31,14 +33,14 @@ export function PageHero({
       />
       <div className="container-page py-14 sm:py-16 lg:py-20">
         {crumbs && (
-          <nav aria-label="Brotkrumen" className="mb-5">
+          <nav aria-label={breadcrumbLabel} className="mb-5">
             <ol className="flex flex-wrap items-center gap-1.5 text-sm text-cocoa-muted">
               {crumbs.map((c, i) => (
                 <li key={c.href} className="flex items-center gap-1.5">
                   {i > 0 && <span aria-hidden>/</span>}
-                  <Link href={c.href} className="hover:text-gold-dark">
+                  <LocaleLink href={c.href} className="hover:text-gold-dark">
                     {c.label}
-                  </Link>
+                  </LocaleLink>
                 </li>
               ))}
             </ol>
@@ -67,12 +69,12 @@ export function InlineArrowLink({
   children: ReactNode;
 }) {
   return (
-    <Link
+    <LocaleLink
       href={href}
       className="inline-flex items-center gap-1.5 font-semibold text-gold-dark hover:underline"
     >
       {children}
       <Icon name="arrow-right" size={16} />
-    </Link>
+    </LocaleLink>
   );
 }

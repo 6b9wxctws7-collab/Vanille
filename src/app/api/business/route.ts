@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { validateBusiness } from "@/lib/validation";
 import { isSpam, processSubmission } from "@/lib/submissions";
+import { getDictionary } from "@/i18n";
+import { isLocale } from "@/i18n/config";
 
 export const runtime = "nodejs";
 
@@ -9,20 +11,20 @@ export async function POST(request: Request) {
   try {
     data = await request.json();
   } catch {
-    return NextResponse.json(
-      { ok: false, message: "Ungültige Anfrage." },
-      { status: 400 },
-    );
+    return NextResponse.json({ ok: false, message: "Bad request." }, { status: 400 });
   }
+
+  const locale = typeof data.locale === "string" && isLocale(data.locale) ? data.locale : "de";
+  const t = getDictionary(locale).forms;
 
   if (isSpam(data)) {
     return NextResponse.json({ ok: true });
   }
 
-  const errors = validateBusiness(data);
+  const errors = validateBusiness(data, t.validation);
   if (Object.keys(errors).length > 0) {
     return NextResponse.json(
-      { ok: false, errors, message: "Bitte prüfen Sie Ihre Angaben." },
+      { ok: false, errors, message: t.validation.checkInputs },
       { status: 422 },
     );
   }
@@ -38,14 +40,7 @@ export async function POST(request: Request) {
     });
   } catch (err) {
     console.error("Fehler bei der Verarbeitung der B2B-Anfrage:", err);
-    return NextResponse.json(
-      {
-        ok: false,
-        message:
-          "Beim Senden ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut.",
-      },
-      { status: 500 },
-    );
+    return NextResponse.json({ ok: false, message: t.errorGeneric }, { status: 500 });
   }
 
   return NextResponse.json({ ok: true });

@@ -12,10 +12,10 @@ type Result = {
 };
 
 /**
- * Kleiner Hook fuer den Formularversand an eine API-Route.
+ * Kleiner Hook für den Formularversand an eine API-Route.
  * Kapselt Status, Feldfehler und eine allgemeine Fehlermeldung.
  */
-export function useFormSubmit(endpoint: string) {
+export function useFormSubmit(endpoint: string, connectionError?: string) {
   const [status, setStatus] = useState<Status>("idle");
   const [errors, setErrors] = useState<FieldErrors>({});
   const [message, setMessage] = useState<string>("");
@@ -40,16 +40,11 @@ export function useFormSubmit(endpoint: string) {
       }
 
       setErrors(data.errors ?? {});
-      setMessage(
-        data.message ??
-          "Beim Senden ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.",
-      );
+      setMessage(data.message ?? connectionError ?? "");
       setStatus("error");
       return false;
     } catch {
-      setMessage(
-        "Verbindung fehlgeschlagen. Bitte prüfen Sie Ihre Internetverbindung und versuchen Sie es erneut.",
-      );
+      setMessage(connectionError ?? "");
       setStatus("error");
       return false;
     }

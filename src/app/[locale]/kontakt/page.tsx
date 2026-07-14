@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/seo";
 import { site } from "@/config/site";
-import { faqItems } from "@/config/content";
+import { getDictionary } from "@/i18n";
+import { isLocale, type Locale } from "@/i18n/config";
 import { PageHero } from "@/components/sections/PageHero";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Icon } from "@/components/Icon";
@@ -9,28 +10,32 @@ import { ContactForm } from "@/components/forms/ContactForm";
 import { FaqAccordion } from "@/components/FaqAccordion";
 import { FaqJsonLd } from "@/components/StructuredData";
 
-export const metadata: Metadata = pageMetadata({
-  title: "Kontakt – B2B-Anfragen für Bourbon-Vanille",
-  description:
-    "Kontaktieren Sie uns per Formular, E-Mail, Telefon oder WhatsApp. Wir beraten Geschäftskunden zu Mustern, Mengen und individuellen Angeboten.",
-  path: "/kontakt",
-  keywords: ["Vanille B2B Kontakt", "Vanille Importeur Schweiz"],
-});
+export function generateMetadata({ params }: { params: { locale: string } }): Metadata {
+  const locale: Locale = isLocale(params.locale) ? params.locale : "de";
+  const dict = getDictionary(locale);
+  return pageMetadata({
+    locale,
+    title: dict.meta.kontakt.title,
+    description: dict.meta.kontakt.description,
+    path: "/kontakt",
+  });
+}
 
-const whatsappHref = `https://wa.me/${site.contact.whatsapp}?text=${encodeURIComponent(
-  site.contact.whatsappMessage,
-)}`;
+export default function KontaktPage({ params }: { params: { locale: Locale } }) {
+  const dict = getDictionary(params.locale);
+  const t = dict.kontaktPage;
+  const whatsappHref = `https://wa.me/${site.contact.whatsapp}?text=${encodeURIComponent(dict.whatsapp.message)}`;
 
-export default function KontaktPage() {
   return (
     <>
       <PageHero
-        eyebrow="Kontakt"
-        title="Wir sind persönlich für Sie da"
-        description="Ob erste Frage, Musteranfrage oder konkretes Angebot – melden Sie sich auf dem Weg, der Ihnen am liebsten ist."
+        eyebrow={t.heroEyebrow}
+        title={t.heroTitle}
+        description={t.heroDescription}
+        breadcrumbLabel={dict.common.breadcrumbLabel}
         crumbs={[
-          { label: "Startseite", href: "/" },
-          { label: "Kontakt", href: "/kontakt" },
+          { label: dict.nav.items[0].label, href: "/" },
+          { label: dict.nav.items[6].label, href: "/kontakt" },
         ]}
       />
 
@@ -39,9 +44,7 @@ export default function KontaktPage() {
           {/* Kontaktdaten */}
           <div className="lg:col-span-5">
             <h2 className="text-2xl font-semibold">{site.contact.company}</h2>
-            <p className="mt-2 text-sm text-cocoa-muted">
-              Hinweis: Unser Angebot richtet sich an Geschäftskunden (B2B).
-            </p>
+            <p className="mt-2 text-sm text-cocoa-muted">{t.b2bNote}</p>
 
             <ul className="mt-8 space-y-5">
               <li className="flex items-start gap-3">
@@ -49,7 +52,7 @@ export default function KontaktPage() {
                   <Icon name="map-pin" size={20} />
                 </span>
                 <div>
-                  <p className="font-medium text-cocoa">Adresse</p>
+                  <p className="font-medium text-cocoa">{t.addressLabel}</p>
                   <p className="text-cocoa-muted">
                     {site.contact.addressLine1}
                     <br />
@@ -62,13 +65,8 @@ export default function KontaktPage() {
                   <Icon name="mail" size={20} />
                 </span>
                 <div>
-                  <p className="font-medium text-cocoa">E-Mail</p>
-                  <a
-                    href={`mailto:${site.contact.email}`}
-                    className="text-cocoa-muted hover:text-gold-dark"
-                  >
-                    {site.contact.email}
-                  </a>
+                  <p className="font-medium text-cocoa">{t.emailLabel}</p>
+                  <a href={`mailto:${site.contact.email}`} className="text-cocoa-muted hover:text-gold-dark">{site.contact.email}</a>
                 </div>
               </li>
               <li className="flex items-start gap-3">
@@ -76,13 +74,8 @@ export default function KontaktPage() {
                   <Icon name="phone" size={20} />
                 </span>
                 <div>
-                  <p className="font-medium text-cocoa">Telefon</p>
-                  <a
-                    href={`tel:${site.contact.phoneHref}`}
-                    className="text-cocoa-muted hover:text-gold-dark"
-                  >
-                    {site.contact.phone}
-                  </a>
+                  <p className="font-medium text-cocoa">{t.phoneLabel}</p>
+                  <a href={`tel:${site.contact.phoneHref}`} className="text-cocoa-muted hover:text-gold-dark">{site.contact.phone}</a>
                 </div>
               </li>
               <li className="flex items-start gap-3">
@@ -90,7 +83,7 @@ export default function KontaktPage() {
                   <Icon name="clock" size={20} />
                 </span>
                 <div>
-                  <p className="font-medium text-cocoa">Geschäftszeiten</p>
+                  <p className="font-medium text-cocoa">{t.hoursLabel}</p>
                   <p className="text-cocoa-muted">{site.contact.openingHours}</p>
                 </div>
               </li>
@@ -103,19 +96,17 @@ export default function KontaktPage() {
               className="mt-8 inline-flex items-center gap-2 rounded-full bg-[#25D366] px-6 py-3 text-sm font-semibold text-white transition-transform hover:scale-[1.02] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-dark"
             >
               <Icon name="whatsapp" size={20} />
-              Über WhatsApp schreiben
+              {t.whatsappButton}
             </a>
           </div>
 
           {/* Kontaktformular */}
           <div className="lg:col-span-7">
             <div className="rounded-3xl border border-cocoa/10 bg-white p-6 shadow-card sm:p-8">
-              <h2 className="text-xl font-semibold">Schreiben Sie uns</h2>
-              <p className="mt-2 text-sm text-cocoa-muted">
-                Wir melden uns in der Regel innerhalb eines Werktags.
-              </p>
+              <h2 className="text-xl font-semibold">{t.formTitle}</h2>
+              <p className="mt-2 text-sm text-cocoa-muted">{t.formSubtitle}</p>
               <div className="mt-6">
-                <ContactForm />
+                <ContactForm t={dict.forms} locale={params.locale} />
               </div>
             </div>
           </div>
@@ -126,19 +117,15 @@ export default function KontaktPage() {
       <section className="section bg-cream-200/50">
         <div className="container-page grid gap-10 lg:grid-cols-12 lg:gap-14">
           <div className="lg:col-span-4">
-            <SectionHeading
-              eyebrow="FAQ"
-              title="Häufige Fragen"
-              description="Antworten auf die wichtigsten Fragen rund um Muster, Mengen, Herkunft und Lieferung."
-            />
+            <SectionHeading eyebrow={t.faqEyebrow} title={t.faqTitle} description={t.faqDescription} />
           </div>
           <div className="lg:col-span-8">
-            <FaqAccordion items={faqItems} />
+            <FaqAccordion items={dict.faq} />
           </div>
         </div>
       </section>
 
-      <FaqJsonLd items={faqItems} />
+      <FaqJsonLd items={dict.faq} />
     </>
   );
 }

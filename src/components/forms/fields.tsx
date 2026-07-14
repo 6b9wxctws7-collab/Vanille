@@ -97,6 +97,7 @@ export function SelectField({
   required,
   options,
   placeholder = "Bitte wählen",
+  defaultValue = "",
   ...props
 }: SelectProps) {
   const errorId = `${id}-error`;
@@ -108,7 +109,7 @@ export function SelectField({
       <select
         id={id}
         required={required}
-        defaultValue=""
+        defaultValue={defaultValue}
         aria-invalid={error ? true : undefined}
         aria-describedby={error ? errorId : undefined}
         className={`${fieldBase} ${borderClass(error)}`}

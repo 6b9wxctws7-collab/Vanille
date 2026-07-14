@@ -1,5 +1,9 @@
+"use client";
+
 import Link from "next/link";
 import type { ComponentProps, ReactNode } from "react";
+import { useLocale } from "@/components/i18n/LocaleLink";
+import { localizeHref } from "@/i18n/routing";
 
 type Variant = "primary" | "secondary" | "ghost";
 type Size = "sm" | "md" | "lg";
@@ -52,10 +56,11 @@ export function ButtonLink({
   children,
   href,
   ...props
-}: CommonProps & ComponentProps<typeof Link>) {
+}: CommonProps & Omit<ComponentProps<typeof Link>, "href"> & { href: string }) {
+  const locale = useLocale();
   return (
     <Link
-      href={href}
+      href={localizeHref(locale, href)}
       className={`${base} ${variants[variant]} ${sizes[size]} ${className}`}
       {...props}
     >

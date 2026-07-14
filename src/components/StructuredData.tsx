@@ -1,18 +1,18 @@
 import { site } from "@/config/site";
-import { products } from "@/config/content";
+import type { Dictionary } from "@/i18n";
 
 /**
  * JSON-LD strukturierte Daten.
  * Organization + einzelne Products. Preise werden bewusst nicht ausgezeichnet
  * (Angebote auf Anfrage); stattdessen wird die Kontaktmoeglichkeit betont.
  */
-export function OrganizationJsonLd() {
+export function OrganizationJsonLd({ description }: { description: string }) {
   const data = {
     "@context": "https://schema.org",
     "@type": "Organization",
     name: site.brandName,
     url: site.url,
-    description: site.description,
+    description,
     slogan: site.tagline,
     email: site.contact.email,
     telephone: site.contact.phone,
@@ -40,7 +40,7 @@ export function OrganizationJsonLd() {
   );
 }
 
-export function ProductsJsonLd() {
+export function ProductsJsonLd({ products }: { products: Dictionary["products"] }) {
   const data = products.map((p) => ({
     "@context": "https://schema.org",
     "@type": "Product",
@@ -52,7 +52,6 @@ export function ProductsJsonLd() {
     offers: {
       "@type": "Offer",
       priceCurrency: "CHF",
-      // Preis auf Anfrage: keine feste Preisauszeichnung.
       availability: "https://schema.org/InStock",
       businessFunction: "http://purl.org/goodrelations/v1#Sell",
       url: `${site.url}/produkte#${p.slug}`,
@@ -69,11 +68,7 @@ export function ProductsJsonLd() {
   );
 }
 
-export function FaqJsonLd({
-  items,
-}: {
-  items: { question: string; answer: string }[];
-}) {
+export function FaqJsonLd({ items }: { items: Dictionary["faq"] }) {
   const data = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
